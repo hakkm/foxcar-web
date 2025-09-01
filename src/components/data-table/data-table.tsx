@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 
 import {
@@ -23,17 +21,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DataTableViewOptions } from "@/components/data-table/data-table-toggle-column";
 import { DataTablePagination } from "@/components/data-table/data-table-pagination";
+import { Spinner } from "@/components/ui/spinner";
+import { useOverlayPosition } from "@/hooks/use-overlay-position";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  isLoading: boolean;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  isLoading = false,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
@@ -63,11 +64,12 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  // Ref for the table wrapper — used to calculate overlay position/size.
+  const wrapperRef = React.useRef<HTMLDivElement | null>(null);
+  const overlayStyle = useOverlayPosition(wrapperRef, [data, isLoading]);
+
   return (
-    <div>
-      <div className="flex items-center py-4">
-        <DataTableViewOptions table={table} />
-      </div>
+    <div ref={wrapperRef} className="relative">
       <div className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
@@ -118,7 +120,19 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
+
       <DataTablePagination table={table} />
+
+      {isLoading && overlayStyle && (
+        <div
+          style={overlayStyle}
+          className="z-50 bg-background/60 backdrop-blur-sm"
+        >
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            <Spinner className="h-8 w-8 text-primary" />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

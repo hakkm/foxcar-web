@@ -22,24 +22,24 @@ src/
     logo.svg
     background.jpg
   components/
-    Button.tsx
-    Modal.tsx
+    button.tsx
+    modal.tsx
   features/
     auth/
-      AuthForm.tsx
-      authSlice.ts
-      authApi.ts
+      auth-form.tsx
+      auth-slice.ts
+      auth-api.ts
   pages/
-    Home.tsx
-    Profile.tsx
+    home.tsx
+    profile.tsx
   hooks/
-    useAuth.ts
-    useDebounce.ts
+    use-auth.ts
+    use-debounce.ts
   utils/
-    formatDate.ts
-    generateId.ts
+    format-date.ts
+    generate-id.ts
   lib/
-    axiosClient.ts
+    axios-client.ts
     firebase.ts
   styles/
     globals.css

@@ -1,12 +1,15 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import type { ProductItem } from "../product.type";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
+import ActionMenu from "./action-menu";
 
 export const columns: ColumnDef<ProductItem>[] = [
  {
     accessorKey: "thumbnail",
     id: "thumbnail",
-    header: () => <span>Image</span>,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Image" />
+    ),
     cell: ({ row }) => {
       const item = row.original;
       return (
@@ -44,5 +47,14 @@ export const columns: ColumnDef<ProductItem>[] = [
       );
     },
     enableSorting: false,
-  }
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const post = row.original;
+
+      return <ActionMenu item={post} />;
+    },
+  },
+
 ];

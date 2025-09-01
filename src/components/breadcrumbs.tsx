@@ -7,22 +7,36 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import React from "react";
 
-// Renders breadcrumbs based on react-router route handles.
-// Add `handle: { breadcrumb: 'Label' }` to your routes in routes.tsx
-// Optionally set it to a function: (match) => string | ReactNode
 export default function Breadcrumbs() {
   const matches = useMatches();
 
-  const crumbs = matches
-    .filter((m) => (m as any).handle && (m as any).handle.breadcrumb)
+  // Build breadcrumbs from route handles, normalize paths (remove trailing slashes)
+  const raw = matches.filter((m) => (m as any).handle && (m as any).handle.breadcrumb);
+
+  const normalizePath = (p: string) => {
+    if (!p) return "/";
+    // Remove trailing slashes but keep root '/'
+    const trimmed = p.replace(/\/+$|(?<=.)$/, "");
+    const withoutTrailing = trimmed.replace(/\/+$/, "");
+    return withoutTrailing === "" ? "/" : withoutTrailing;
+  };
+
+  const seen = new Set<string>();
+  const crumbs = raw
     .map((m) => {
       const handle = (m as any).handle;
       const value = typeof handle.breadcrumb === "function" ? handle.breadcrumb(m) : handle.breadcrumb;
-      return {
-        href: (m as any).pathname || "/",
-        label: value,
-      } as { href: string; label: React.ReactNode };
+      const href = (m as any).pathname || "/";
+      return { href, label: value } as { href: string; label: React.ReactNode };
+    })
+    .filter((c) => {
+      const norm = normalizePath(c.href);
+      if (seen.has(norm)) return false;
+      seen.add(norm);
+      c.href = norm;
+      return true;
     });
 
   if (!crumbs.length) return null;
@@ -33,8 +47,8 @@ export default function Breadcrumbs() {
         {crumbs.map((c, idx) => {
           const isLast = idx === crumbs.length - 1;
           return (
-            <div key={`crumb-${idx}`}>
-              <BreadcrumbItem key={`item-${idx}`}>
+            <React.Fragment key={`crumb-${c.href}-${idx}`}>
+              <BreadcrumbItem>
                 {isLast ? (
                   <BreadcrumbPage>{c.label}</BreadcrumbPage>
                 ) : (
@@ -43,8 +57,8 @@ export default function Breadcrumbs() {
                   </BreadcrumbLink>
                 )}
               </BreadcrumbItem>
-              {!isLast && <BreadcrumbSeparator key={`sep-${idx}`} />}
-            </div>
+              {!isLast && <BreadcrumbSeparator />}
+            </React.Fragment>
           );
         })}
       </BreadcrumbList>

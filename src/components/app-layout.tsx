@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { Car, Home, Info, Mail, Newspaper } from "lucide-react";
-import Breadcrumbs from "@/components/Breadcrumbs";
+import Breadcrumbs from "@/components/breadcrumbs";
 import { ModeToggle } from "./ui/mode-toggle";
 
 const navItems = [
