@@ -1,4 +1,4 @@
-import type { Product as ProductCollection } from "@/types/product";
+import type { Product as ProductCollection } from "@/features/products/product.type";
 import useSWR from "swr";
 
 export function useProducts(search: string, keepPreviousData: boolean) {

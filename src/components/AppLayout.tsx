@@ -19,6 +19,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Car, Home, Info, Mail, Newspaper } from "lucide-react";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { ModeToggle } from "./ui/mode-toggle";
 
 const navItems = [
   { to: "/", label: "Home", icon: Home },
@@ -88,6 +89,8 @@ export default function AppLayout() {
           <SidebarTrigger />
           <Separator orientation="vertical" className="mx-1 h-6" />
           <Breadcrumbs />
+          <div className="flex-1" />
+          <ModeToggle />
         </div>
         <div className="p-3 sm:p-4">
           <Outlet />

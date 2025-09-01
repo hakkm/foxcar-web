@@ -8,3 +8,5 @@ export type Product = {
     }
   ]
 }
+
+export type ProductItem = Product["products"][0];
