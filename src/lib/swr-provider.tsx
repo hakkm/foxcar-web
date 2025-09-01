@@ -1,11 +1,8 @@
-import { RouterProvider } from "react-router-dom";
-import { routes } from "./router/routes";
-import { SWRConfig } from "swr";
-import { Toaster } from "./components/ui/sonner";
+import React from "react";
 import { toast } from "sonner";
-import { ThemeProvider } from "./hooks/theme-provider";
+import { SWRConfig } from "swr";
 
-export default function App() {
+export function SWRProvider({ children }: { children: React.ReactNode }) {
   return (
     <SWRConfig
       value={{
@@ -19,10 +16,7 @@ export default function App() {
         },
       }}
     >
-      <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-        <RouterProvider router={routes} />
-      </ThemeProvider>
-      <Toaster closeButton={true} />
+      {children}
     </SWRConfig>
   );
 }
