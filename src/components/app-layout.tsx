@@ -17,7 +17,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { Car, Home, Info, Mail, Newspaper } from "lucide-react";
+import { Car, Home, Info, Mail, Newspaper, Star } from "lucide-react";
 import Breadcrumbs from "@/components/breadcrumbs";
 import { ModeToggle } from "./ui/mode-toggle";
 
@@ -26,6 +26,7 @@ const navItems = [
   { to: "/about", label: "About", icon: Info },
   { to: "/contact", label: "Contact", icon: Mail },
   { to: "/posts", label: "Posts", icon: Newspaper },
+  { to: "/vehicles", label: "Vehicles", icon: Car },
 ] as const;
 
 export default function AppLayout() {
@@ -33,7 +34,7 @@ export default function AppLayout() {
     <SidebarProvider
       style={
         {
-          "--sidebar-width": "calc(var(--spacing) * 72)",
+          "--sidebar-width": "calc(var(--spacing) * 50)",
           "--header-height": "calc(var(--spacing) * 12)",
         } as React.CSSProperties
       }
@@ -47,7 +48,7 @@ export default function AppLayout() {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <a href="#">
-                <Car className="!size-5" />
+                <Star className="!size-5" />
                 <span className="text-base font-semibold">Fox Car.</span>
               </a>
             </SidebarMenuButton>

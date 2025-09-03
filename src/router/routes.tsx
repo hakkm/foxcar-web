@@ -6,6 +6,8 @@ import ContactPage from '../pages/ContactPage';
 import NotFoundPage from '../pages/NotFoundPage';
 import PostsPage from '@/pages/products/ProductPage';
 import AddProductPage from '@/pages/products/AddProductPage';
+import VehiclesPage from '@/pages/vehicles/VehiclesPage';
+import AddVehiclePage from '@/pages/vehicles/AddVehiclePage';
 
 export const routes = createBrowserRouter([
   {
@@ -22,6 +24,15 @@ export const routes = createBrowserRouter([
         children: [
           { index: true, element: <PostsPage />, handle: { breadcrumb: 'Posts' } },
           { path: 'create', element: <AddProductPage />, handle: { breadcrumb: 'Create' } },
+        ],
+      },
+      {
+        path: 'vehicles',
+        element: <Outlet />,
+        handle: { breadcrumb: 'Vehicles' },
+        children: [
+          { index: true, element: <VehiclesPage />, handle: { breadcrumb: 'Vehicles' } },
+          { path: 'create', element: <AddVehiclePage />, handle: { breadcrumb: 'Create' } },
         ],
       },
       { path: '*', element: <NotFoundPage />, handle: { breadcrumb: 'Not Found' } },

@@ -3,6 +3,7 @@ applyTo: '**'
 ---
 package manager: pnpm
 ui components: shadcn (always use shadcn components when available, generate the command to run to install it)
+language of frontend text: French, (but code in english)
 
 # Folder structure
 ### The Base Layout

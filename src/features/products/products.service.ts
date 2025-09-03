@@ -8,6 +8,7 @@ export function useProducts(search: string, keepPreviousData: boolean) {
       keepPreviousData,
     }
   );
+  new Promise((r) => setTimeout(r, 5000));
 
   return { data, isLoading };
 }
