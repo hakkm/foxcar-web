@@ -11,6 +11,7 @@ export default function VehiclesPage() {
   const [search, setSearch] = React.useState("");
   const { data, isLoading } = useVehicles(search, true);
 
+
   return (
     <div>
       <h1 className="mb-4 text-lg font-semibold">Vehicles</h1>
@@ -27,12 +28,12 @@ export default function VehiclesPage() {
           />
         </div>
         <div className="flex items-center py-4 gap-2">
-          <Button variant="outline" size="sm">
             <Link to="/vehicles/create" className="inline-flex items-center gap-2">
+          <Button variant="outline" size="sm">
               <Plus />
               <span className="hidden lg:inline">Add Vehicle</span>
-            </Link>
           </Button>
+            </Link>
         </div>
       </div>
 

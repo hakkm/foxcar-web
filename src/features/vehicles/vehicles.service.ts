@@ -1,7 +1,7 @@
 import useSWR from "swr";
 import type { VehicleItem } from "./vehicle.type";
 
-const BASE = "http://localhost:8080";
+const BASE = "http://127.0.0.1:8080";
 
 export function useVehicles(search: string, keepPreviousData: boolean) {
   const { data, isLoading, mutate } = useSWR<VehicleItem[]>(`${BASE}/vehicles`, {

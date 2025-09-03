@@ -1,15 +1,63 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { vehicleFormSchema, type VehicleForm, fuelTypes, statuses, gearboxTypes, vehicleTypes } from "../vehicle.type";
+import {
+  vehicleFormSchema,
+  type VehicleForm,
+  fuelTypes,
+  statuses,
+  gearboxTypes,
+  vehicleTypes,
+} from "../vehicle.type";
 import { createVehicle } from "../vehicles.service";
 import { toast } from "sonner";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
-export default function AddVehicleForm({ onCreated }: { onCreated?: () => void }) {
+function formatDateDDMMYYYY(d: Date) {
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = d.getFullYear();
+  return `${dd}/${mm}/${yyyy}`;
+}
+
+function parseDDMMYYYY(s?: string): Date | undefined {
+  if (!s) return undefined;
+  const m = s.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  if (!m) return undefined;
+  const [_, dd, mm, yyyy] = m;
+  const d = new Date(Number(yyyy), Number(mm) - 1, Number(dd));
+  return isNaN(d.getTime()) ? undefined : d;
+}
+
+export default function AddVehicleForm({
+  onCreated,
+}: {
+  onCreated?: () => void;
+}) {
   const form = useForm<VehicleForm>({
     resolver: zodResolver(vehicleFormSchema) as any,
     defaultValues: {
@@ -99,15 +147,41 @@ export default function AddVehicleForm({ onCreated }: { onCreated?: () => void }
           <FormField
             control={form.control}
             name="vehicle_release_date"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Release Date</FormLabel>
-                <FormControl>
-                  <Input placeholder="01/01/2024" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            render={({ field }) => {
+              const selected = parseDDMMYYYY(field.value);
+              return (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Release Date</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {field.value ? field.value : <span>Pick a date</span>}
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={selected}
+                        onSelect={(d) =>
+                          d && field.onChange(formatDateDDMMYYYY(d))
+                        }
+                        captionLayout="dropdown"
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
           />
           <FormField
             control={form.control}
@@ -148,7 +222,9 @@ export default function AddVehicleForm({ onCreated }: { onCreated?: () => void }
                     </SelectTrigger>
                     <SelectContent>
                       {fuelTypes.map((t) => (
-                        <SelectItem key={t} value={t}>{t}</SelectItem>
+                        <SelectItem key={t} value={t}>
+                          {t}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -170,7 +246,9 @@ export default function AddVehicleForm({ onCreated }: { onCreated?: () => void }
                     </SelectTrigger>
                     <SelectContent>
                       {statuses.map((s) => (
-                        <SelectItem key={s} value={s}>{s}</SelectItem>
+                        <SelectItem key={s} value={s}>
+                          {s}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -205,7 +283,9 @@ export default function AddVehicleForm({ onCreated }: { onCreated?: () => void }
                     </SelectTrigger>
                     <SelectContent>
                       {gearboxTypes.map((g) => (
-                        <SelectItem key={g} value={g}>{g}</SelectItem>
+                        <SelectItem key={g} value={g}>
+                          {g}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -227,7 +307,9 @@ export default function AddVehicleForm({ onCreated }: { onCreated?: () => void }
                     </SelectTrigger>
                     <SelectContent>
                       {vehicleTypes.map((vt) => (
-                        <SelectItem key={vt} value={vt}>{vt}</SelectItem>
+                        <SelectItem key={vt} value={vt}>
+                          {vt}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -243,7 +325,10 @@ export default function AddVehicleForm({ onCreated }: { onCreated?: () => void }
               <FormItem className="flex items-center gap-2">
                 <FormLabel>AC</FormLabel>
                 <FormControl>
-                  <Switch checked={field.value} onCheckedChange={field.onChange} />
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
