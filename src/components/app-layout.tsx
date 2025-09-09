@@ -17,7 +17,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { Car, Home, Info, Mail, Newspaper, Users } from "lucide-react";
+import { Car, Home, Info, Mail, Newspaper, Users, Building2 } from "lucide-react";
 import Breadcrumbs from "@/components/breadcrumbs";
 import { ModeToggle } from "./ui/mode-toggle";
 
@@ -28,6 +28,7 @@ const navItems = [
   // { to: "/posts", label: "Posts", icon: Newspaper },
   { to: "/vehicles", label: "Vehicles", icon: Car },
   { to: "/clients", label: "Clients", icon: Users },
+  { to: "/partners", label: "Partners", icon: Building2 },
 ] as const;
 
 export default function AppLayout() {
