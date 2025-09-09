@@ -8,6 +8,8 @@ import AddClientPage from '@/pages/clients/AddClientPage';
 import HomePage from '@/pages/HomePage';
 import PartnersPage from '@/pages/partners/PartnersPage';
 import AddPartnerPage from '@/pages/partners/AddPartnerPage';
+import FranchisesPage from '@/pages/franchises/FranchisesPage';
+import AddFranchisePage from '@/pages/franchises/AddFranchisePage';
 
 export const routes = createBrowserRouter([
   {
@@ -42,6 +44,15 @@ export const routes = createBrowserRouter([
         children: [
           { index: true, element: <PartnersPage />, handle: { breadcrumb: 'Partners' } },
           { path: 'create', element: <AddPartnerPage />, handle: { breadcrumb: 'Create' } },
+        ],
+      },
+      {
+        path: 'franchises',
+        element: <Outlet />,
+        handle: { breadcrumb: 'Franchises' },
+        children: [
+          { index: true, element: <FranchisesPage />, handle: { breadcrumb: 'Franchises' } },
+          { path: 'create', element: <AddFranchisePage />, handle: { breadcrumb: 'Create' } },
         ],
       },
       { path: '*', element: <NotFoundPage />, handle: { breadcrumb: 'Not Found' } },
