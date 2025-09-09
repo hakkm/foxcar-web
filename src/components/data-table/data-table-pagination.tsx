@@ -16,12 +16,57 @@ import {
 } from "@/components/ui/select";
 
 interface DataTablePaginationProps<TData> {
-  table: Table<TData>
+  table: Table<TData>;
+  onPageChange?: (page: number) => void;
+  onPageSizeChange?: (size: number) => void;
 }
 
 export function DataTablePagination<TData>({
   table,
+  onPageChange,
+  onPageSizeChange,
 }: DataTablePaginationProps<TData>) {
+  const handlePageSizeChange = (value: string) => {
+    const newSize = Number(value);
+    if (onPageSizeChange) {
+      onPageSizeChange(newSize);
+    } else {
+      table.setPageSize(newSize);
+    }
+  };
+
+  const handleFirstPage = () => {
+    if (onPageChange) {
+      onPageChange(0);
+    } else {
+      table.setPageIndex(0);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (onPageChange) {
+      onPageChange(table.getState().pagination.pageIndex - 1);
+    } else {
+      table.previousPage();
+    }
+  };
+
+  const handleNextPage = () => {
+    if (onPageChange) {
+      onPageChange(table.getState().pagination.pageIndex + 1);
+    } else {
+      table.nextPage();
+    }
+  };
+
+  const handleLastPage = () => {
+    if (onPageChange) {
+      onPageChange(table.getPageCount() - 1);
+    } else {
+      table.setPageIndex(table.getPageCount() - 1);
+    }
+  };
+
   return (
     <div className="flex items-center justify-between px-1">
       <div className="text-muted-foreground flex-1 text-xs sm:text-sm">
@@ -33,9 +78,7 @@ export function DataTablePagination<TData>({
           <p className="hidden sm:block text-sm font-medium">Rows per page</p>
           <Select
             value={`${table.getState().pagination.pageSize}`}
-            onValueChange={(value) => {
-              table.setPageSize(Number(value))
-            }}
+            onValueChange={handlePageSizeChange}
           >
             <SelectTrigger className="h-7 w-[65px] sm:h-8 sm:w-[90px]">
               <SelectValue placeholder={table.getState().pagination.pageSize} />
@@ -58,7 +101,7 @@ export function DataTablePagination<TData>({
             variant="outline"
             size="icon"
             className="hidden lg:flex lg:h-8 lg:w-8"
-            onClick={() => table.setPageIndex(0)}
+            onClick={handleFirstPage}
             disabled={!table.getCanPreviousPage()}
           >
             <span className="sr-only">Go to first page</span>
@@ -68,7 +111,7 @@ export function DataTablePagination<TData>({
             variant="outline"
             size="icon"
             className="h-7 w-7 sm:h-8 sm:w-8"
-            onClick={() => table.previousPage()}
+            onClick={handlePreviousPage}
             disabled={!table.getCanPreviousPage()}
           >
             <span className="sr-only">Go to previous page</span>
@@ -78,7 +121,7 @@ export function DataTablePagination<TData>({
             variant="outline"
             size="icon"
             className="h-7 w-7 sm:h-8 sm:w-8"
-            onClick={() => table.nextPage()}
+            onClick={handleNextPage}
             disabled={!table.getCanNextPage()}
           >
             <span className="sr-only">Go to next page</span>
@@ -88,7 +131,7 @@ export function DataTablePagination<TData>({
             variant="outline"
             size="icon"
             className="hidden lg:flex lg:h-8 lg:w-8"
-            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+            onClick={handleLastPage}
             disabled={!table.getCanNextPage()}
           >
             <span className="sr-only">Go to last page</span>
@@ -97,5 +140,5 @@ export function DataTablePagination<TData>({
         </div>
       </div>
     </div>
-  )
+  );
 }

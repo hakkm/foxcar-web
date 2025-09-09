@@ -17,16 +17,17 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { Car, Home, Info, Mail, Newspaper, Star } from "lucide-react";
+import { Car, Home, Info, Mail, Newspaper, Users } from "lucide-react";
 import Breadcrumbs from "@/components/breadcrumbs";
 import { ModeToggle } from "./ui/mode-toggle";
 
 const navItems = [
   { to: "/", label: "Home", icon: Home },
-  { to: "/about", label: "About", icon: Info },
-  { to: "/contact", label: "Contact", icon: Mail },
-  { to: "/posts", label: "Posts", icon: Newspaper },
+  // { to: "/about", label: "About", icon: Info },
+  // { to: "/contact", label: "Contact", icon: Mail },
+  // { to: "/posts", label: "Posts", icon: Newspaper },
   { to: "/vehicles", label: "Vehicles", icon: Car },
+  { to: "/clients", label: "Clients", icon: Users },
 ] as const;
 
 export default function AppLayout() {
@@ -48,7 +49,7 @@ export default function AppLayout() {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <a href="#">
-                <Star className="!size-5" />
+                <Car className="!size-5" />
                 <span className="text-base font-semibold">Fox Car.</span>
               </a>
             </SidebarMenuButton>

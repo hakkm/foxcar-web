@@ -2,18 +2,18 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { DataTable } from "@/components/data-table/data-table";
-import { columns } from "@/features/vehicles/components/columns";
-import { useVehicles } from "@/features/vehicles/vehicles.service";
+import { columns } from "@/features/clients/components/columns";
+import { useClients } from "@/features/clients/clients.service";
 import { Input } from "@/components/ui/input";
 import React from "react";
 import { useDebounce } from "@/hooks/use-debounce";
 
-export default function VehiclesPage() {
+export default function ClientsPage() {
   const [search, setSearch] = React.useState("");
   const [pageIndex, setPageIndex] = React.useState(0);
   const [pageSize, setPageSize] = React.useState(10);
   const debounced = useDebounce(search, 300);
-  const { data, isLoading, pagination } = useVehicles(debounced, pageIndex, pageSize, true);
+  const { data, isLoading, pagination } = useClients(debounced, pageIndex, pageSize, true);
   const isTyping = search !== debounced;
 
   const handlePageChange = (newPage: number) => {
@@ -27,7 +27,7 @@ export default function VehiclesPage() {
 
   return (
     <div>
-      <h1 className="mb-4 text-lg font-semibold">Vehicles</h1>
+      <h1 className="mb-4 text-lg font-semibold">Clients</h1>
 
       <div className="mb-4 flex items-center justify-between">
         <div className="search-container flex-1  mr-8">
@@ -35,19 +35,16 @@ export default function VehiclesPage() {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search Vehicles..."
+            placeholder="Search Clients..."
             autoFocus
             className="w-full"
           />
         </div>
         <div className="flex items-center py-4 gap-2">
-          <Link
-            to="/vehicles/create"
-            className="inline-flex items-center gap-2"
-          >
+          <Link to="/clients/create" className="inline-flex items-center gap-2">
             <Button variant="outline" size="sm">
               <Plus />
-              <span className="hidden lg:inline">Add Vehicle</span>
+              <span className="hidden lg:inline">Add Client</span>
             </Button>
           </Link>
         </div>

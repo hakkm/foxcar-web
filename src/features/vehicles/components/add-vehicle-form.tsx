@@ -61,18 +61,19 @@ export default function AddVehicleForm({
   const form = useForm<VehicleForm>({
     resolver: zodResolver(vehicleFormSchema) as any,
     defaultValues: {
-      registration_number: "",
-      brand: "",
-      model: "",
-      year: undefined as unknown as number,
-      vehicle_release_date: "",
-      mileage: undefined as unknown as number,
-      number_of_seats: undefined as unknown as number,
+      // Prefilled defaults for quick testing
+      registration_number: "123456WW",
+      brand: "Dacia",
+      model: "Duster",
+      year: 2024,
+      vehicle_release_date: "01/01/2024",
+      mileage: 91400,
+      number_of_seats: 5,
       fuel_type: "petrol",
       status: "available",
-      rental_price_per_day: undefined as unknown as number,
+      rental_price_per_day: 300,
       gearbox_type: "manual",
-      air_conditioning: false,
+      air_conditioning: true,
       vehicle_type: "sedan",
     },
   });

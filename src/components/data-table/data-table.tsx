@@ -7,7 +7,6 @@ import {
   useReactTable,
   type SortingState,
   getSortedRowModel,
-  getPaginationRowModel,
   type ColumnFiltersState,
   getFilteredRowModel,
   type VisibilityState,
@@ -29,12 +28,22 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   isLoading: boolean;
+  totalRows?: number;
+  currentPage?: number;
+  pageSize?: number;
+  onPageChange?: (page: number) => void;
+  onPageSizeChange?: (size: number) => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   isLoading = false,
+  totalRows,
+  currentPage,
+  pageSize,
+  onPageChange,
+  onPageSizeChange,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
@@ -45,13 +54,17 @@ export function DataTable<TData, TValue>({
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  const isServerPagination =
+    totalRows !== undefined &&
+    currentPage !== undefined &&
+    pageSize !== undefined;
+
   const table = useReactTable({
     data,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
@@ -61,7 +74,31 @@ export function DataTable<TData, TValue>({
       columnFilters,
       columnVisibility,
       rowSelection,
+      ...(isServerPagination
+        ? {
+            pagination: {
+              pageIndex: currentPage,
+              pageSize,
+            },
+          }
+        : {}),
     },
+    manualPagination: isServerPagination,
+    pageCount: isServerPagination
+      ? Math.ceil(totalRows / pageSize)
+      : undefined,
+    onPaginationChange: isServerPagination
+      ? (updater) => {
+          const newState =
+            typeof updater === "function"
+              ? updater({ pageIndex: currentPage, pageSize })
+              : updater;
+          if (newState.pageIndex !== currentPage)
+            onPageChange?.(newState.pageIndex);
+          if (newState.pageSize !== pageSize)
+            onPageSizeChange?.(newState.pageSize);
+        }
+      : undefined,
   });
 
   // Ref for the table wrapper — used to calculate overlay position/size.
@@ -121,7 +158,11 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
 
-      <DataTablePagination table={table} />
+      <DataTablePagination
+        table={table}
+        onPageChange={isServerPagination ? onPageChange : undefined}
+        onPageSizeChange={isServerPagination ? onPageSizeChange : undefined}
+      />
 
       {isLoading && overlayStyle && (
         <div
