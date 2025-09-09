@@ -10,6 +10,8 @@ import PartnersPage from '@/pages/partners/PartnersPage';
 import AddPartnerPage from '@/pages/partners/AddPartnerPage';
 import FranchisesPage from '@/pages/franchises/FranchisesPage';
 import AddFranchisePage from '@/pages/franchises/AddFranchisePage';
+import SubRentalVehiclesPage from '@/pages/sub-rental-vehicles/SubRentalVehiclesPage';
+import AddSubRentalVehiclePage from '@/pages/sub-rental-vehicles/AddSubRentalVehiclePage';
 
 export const routes = createBrowserRouter([
   {
@@ -53,6 +55,15 @@ export const routes = createBrowserRouter([
         children: [
           { index: true, element: <FranchisesPage />, handle: { breadcrumb: 'Franchises' } },
           { path: 'create', element: <AddFranchisePage />, handle: { breadcrumb: 'Create' } },
+        ],
+      },
+      {
+        path: 'sub-rental-vehicles',
+        element: <Outlet />,
+        handle: { breadcrumb: 'Sous-location' },
+        children: [
+          { index: true, element: <SubRentalVehiclesPage />, handle: { breadcrumb: 'Sous-location' } },
+          { path: 'create', element: <AddSubRentalVehiclePage />, handle: { breadcrumb: 'Créer' } },
         ],
       },
       { path: '*', element: <NotFoundPage />, handle: { breadcrumb: 'Not Found' } },
