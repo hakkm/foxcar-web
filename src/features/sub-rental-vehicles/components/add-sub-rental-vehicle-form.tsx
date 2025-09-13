@@ -19,7 +19,7 @@ const formSchema = subRentalVehicleFormSchema;
 
 type FormValues = SubRentalVehicleForm;
 
-export function AddSubRentalVehicleForm() {
+export function AddSubRentalVehicleForm({ partnerId, onCreated }: { partnerId?: number; onCreated?: () => void }) {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema) as any,
     defaultValues: {
@@ -37,7 +37,7 @@ export function AddSubRentalVehicleForm() {
       air_conditioning: true,
       vehicle_type: "suv",
       is_sub_rental: true,
-      partner_id: 1,
+      partner_id: partnerId ?? 1,
       rental_price_per_day_from_partner: 250,
     },
   });
@@ -46,6 +46,7 @@ export function AddSubRentalVehicleForm() {
     try {
       await createSubRentalVehicle(values as any);
       toast.success("Véhicule ajouté avec succès");
+      onCreated?.();
       form.reset();
     } catch (e: any) {
       toast.error(e?.message || "Erreur lors de la création");

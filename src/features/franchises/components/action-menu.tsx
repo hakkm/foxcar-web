@@ -31,13 +31,12 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import type { PartnerItem } from "../partner.type";
-import { partnerStatuses } from "../partner.type";
-import { deletePartner, updatePartner } from "../partners.service";
+import { franchiseStatuses } from "../franchise.type";
+import { deleteFranchise, updateFranchise } from "../franchises.service";
 
 function formatDateDDMMYYYY(d: Date) {
   const dd = String(d.getDate()).padStart(2, "0");
@@ -45,57 +44,58 @@ function formatDateDDMMYYYY(d: Date) {
   const yyyy = d.getFullYear();
   return `${dd}/${mm}/${yyyy}`;
 }
+
 function parseDDMMYYYY(s?: string): Date | undefined {
   if (!s) return undefined;
   const m = s.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
   if (!m) return undefined;
-  const [, dd, mm, yyyy] = m;
+  const [_, dd, mm, yyyy] = m;
   const d = new Date(Number(yyyy), Number(mm) - 1, Number(dd));
   return isNaN(d.getTime()) ? undefined : d;
 }
 
-export function ActionMenu({ row }: { row: { original: PartnerItem } }) {
-  const partner = row.original;
-  if (partner.id == null) return null;
-
-  const [openDeleteId, setOpenDeleteId] = useState<number | null>(null);
+export default function ActionMenu<TItem>({
+  item,
+}: {
+  item: TItem & { id?: number | undefined } & Record<string, any>;
+}) {
+  if (item.id == null) return null;
+  const [openId, setOpenId] = useState<number | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
+  // Edit state
   const [editing, setEditing] = useState<any | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
-  const closeEdit = () => {
+  const closeEditModal = () => {
+    setSaveError(null);
     setEditing(null);
     setSaving(false);
-    setSaveError(null);
   };
 
-  async function saveEditing() {
+  const saveEditing = async () => {
     if (!editing?.id) return;
     try {
-      setSaving(true);
       setSaveError(null);
+      setSaving(true);
       const payload = {
-        company_name: String(editing.company_name ?? ""),
-        address: String(editing.address ?? ""),
-        phone: String(editing.phone ?? ""),
-        email: String(editing.email ?? ""),
-        partnership_start_date: String(editing.partnership_start_date ?? ""),
-        partnership_end_date: String(editing.partnership_end_date ?? ""),
+        name: String(editing.name ?? ""),
         status: editing.status,
+        franchise_start_date: String(editing.franchise_start_date ?? ""),
+        franchise_end_date: String(editing.franchise_end_date ?? ""),
         description: editing.description ?? null,
       };
-      await updatePartner(editing.id, payload);
-      closeEdit();
+      await updateFranchise(editing.id, payload);
+      closeEditModal();
       window.location.reload();
     } catch (e: any) {
       setSaveError(e?.message || "Échec de l'enregistrement. Réessayez.");
     } finally {
       setSaving(false);
     }
-  }
+  };
 
   return (
     <div className="flex items-center gap-2">
@@ -107,14 +107,14 @@ export function ActionMenu({ row }: { row: { original: PartnerItem } }) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setEditing(partner)}>
+          <DropdownMenuItem onClick={() => setEditing(item)}>
             <div className="flex items-center gap-2">
               <PencilIcon className="w-4 h-4" /> Modifier
             </div>
           </DropdownMenuItem>
           <DropdownMenuItem
             variant="destructive"
-            onClick={() => setTimeout(() => setOpenDeleteId(partner.id!), 50)}
+            onClick={() => setTimeout(() => setOpenId(item.id!), 50)}
           >
             <div className="flex items-center gap-2">
               <TrashIcon className="w-4 h-4 text-red-600" /> Supprimer
@@ -124,45 +124,49 @@ export function ActionMenu({ row }: { row: { original: PartnerItem } }) {
       </DropdownMenu>
 
       <AlertDialog
-        open={openDeleteId === partner.id}
-        onOpenChange={(isOpen) => setOpenDeleteId(isOpen ? partner.id! : null)}
+        open={openId === item.id}
+        onOpenChange={(isOpen) => setOpenId(isOpen ? item.id! : null)}
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Supprimer le partenaire</AlertDialogTitle>
+            <AlertDialogTitle>Supprimer la franchise</AlertDialogTitle>
             <AlertDialogDescription>
               Cette action est irréversible. Confirmez la suppression.
             </AlertDialogDescription>
-            {deleteError && <p className="mt-2 text-sm text-red-600">{deleteError}</p>}
+            {deleteError && (
+              <p className="mt-2 text-sm text-red-600">{deleteError}</p>
+            )}
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel asChild>
               <Button
                 variant="secondary"
-                disabled={deletingId === partner.id}
-                onClick={() => setOpenDeleteId(null)}
+                disabled={deletingId === item.id}
+                onClick={() => setOpenId(null)}
               >
                 Annuler
               </Button>
             </AlertDialogCancel>
             <Button
               variant="destructive"
-              disabled={deletingId === partner.id}
+              disabled={deletingId === item.id}
               onClick={async () => {
                 try {
                   setDeleteError(null);
-                  setDeletingId(partner.id!);
-                  await deletePartner(partner.id!);
-                  setOpenDeleteId(null);
+                  setDeletingId(item.id!);
+                  await deleteFranchise(item.id!);
+                  setOpenId(null);
                   window.location.reload();
                 } catch (e: any) {
-                  setDeleteError(e?.message || "Échec de la suppression. Réessayez.");
+                  setDeleteError(
+                    e?.message || "Échec de la suppression. Réessayez."
+                  );
                 } finally {
                   setDeletingId(null);
                 }
               }}
             >
-              {deletingId === partner.id ? (
+              {deletingId === item.id ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Suppression…
@@ -178,105 +182,39 @@ export function ActionMenu({ row }: { row: { original: PartnerItem } }) {
       <Dialog
         open={!!editing}
         onOpenChange={(open) => {
-          if (!open) closeEdit();
+          if (!open) closeEditModal();
         }}
       >
-        <DialogContent className="max-w-4xl w-full">
+        <DialogContent className="max-w-3xl w-full">
           <DialogHeader>
-            <DialogTitle>Modifier le partenaire</DialogTitle>
+            <DialogTitle>Modifier la franchise</DialogTitle>
             <DialogDescription>Mettre à jour les informations et enregistrer.</DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <label className="flex flex-col text-sm">
-                <span className="mb-1">Société</span>
+                <span className="mb-1">Nom</span>
                 <Input
-                  value={editing?.company_name ?? ""}
-                  onChange={(e) => setEditing((s: any) => (s ? { ...s, company_name: e.target.value } : s))}
+                  value={editing?.name ?? ""}
+                  onChange={(e) =>
+                    setEditing((s: any) => (s ? { ...s, name: e.target.value } : s))
+                  }
                 />
-              </label>
-              <label className="flex flex-col text-sm">
-                <span className="mb-1">Email</span>
-                <Input
-                  type="email"
-                  value={editing?.email ?? ""}
-                  onChange={(e) => setEditing((s: any) => (s ? { ...s, email: e.target.value } : s))}
-                />
-              </label>
-              <label className="flex flex-col text-sm">
-                <span className="mb-1">Téléphone</span>
-                <Input
-                  value={editing?.phone ?? ""}
-                  onChange={(e) => setEditing((s: any) => (s ? { ...s, phone: e.target.value } : s))}
-                />
-              </label>
-              <label className="flex flex-col text-sm">
-                <span className="mb-1">Adresse</span>
-                <Input
-                  value={editing?.address ?? ""}
-                  onChange={(e) => setEditing((s: any) => (s ? { ...s, address: e.target.value } : s))}
-                />
-              </label>
-              <label className="flex flex-col text-sm">
-                <span className="mb-1">Date début partenariat</span>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={cn("justify-start text-left font-normal", !editing?.partnership_start_date && "text-muted-foreground")}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {editing?.partnership_start_date ? editing.partnership_start_date : <span>Choisir</span>}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      captionLayout="dropdown"
-                      selected={parseDDMMYYYY(editing?.partnership_start_date)}
-                      onSelect={(d) =>
-                        d && setEditing((s: any) => (s ? { ...s, partnership_start_date: formatDateDDMMYYYY(d) } : s))
-                      }
-                    />
-                  </PopoverContent>
-                </Popover>
-              </label>
-              <label className="flex flex-col text-sm">
-                <span className="mb-1">Date fin partenariat</span>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={cn("justify-start text-left font-normal", !editing?.partnership_end_date && "text-muted-foreground")}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {editing?.partnership_end_date ? editing.partnership_end_date : <span>Choisir</span>}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      captionLayout="dropdown"
-                      selected={parseDDMMYYYY(editing?.partnership_end_date)}
-                      onSelect={(d) =>
-                        d && setEditing((s: any) => (s ? { ...s, partnership_end_date: formatDateDDMMYYYY(d) } : s))
-                      }
-                    />
-                  </PopoverContent>
-                </Popover>
               </label>
               <label className="flex flex-col text-sm">
                 <span className="mb-1">Statut</span>
                 <Select
                   value={editing?.status ?? undefined}
-                  onValueChange={(v) => setEditing((s: any) => (s ? { ...s, status: v } : s))}
+                  onValueChange={(v) =>
+                    setEditing((s: any) => (s ? { ...s, status: v } : s))
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Statut" />
                   </SelectTrigger>
                   <SelectContent>
-                    {partnerStatuses.map((st) => (
+                    {franchiseStatuses.map((st) => (
                       <SelectItem key={st} value={st}>
                         {st}
                       </SelectItem>
@@ -284,11 +222,93 @@ export function ActionMenu({ row }: { row: { original: PartnerItem } }) {
                   </SelectContent>
                 </Select>
               </label>
+              <label className="flex flex-col text-sm">
+                <span className="mb-1">Date début</span>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "justify-start text-left font-normal",
+                        !editing?.franchise_start_date && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {editing?.franchise_start_date ? (
+                        editing.franchise_start_date
+                      ) : (
+                        <span>Choisir</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={parseDDMMYYYY(editing?.franchise_start_date)}
+                      captionLayout="dropdown"
+                      onSelect={(d) =>
+                        d &&
+                        setEditing((s: any) =>
+                          s
+                            ? {
+                                ...s,
+                                franchise_start_date: formatDateDDMMYYYY(d),
+                              }
+                            : s
+                        )
+                      }
+                    />
+                  </PopoverContent>
+                </Popover>
+              </label>
+              <label className="flex flex-col text-sm">
+                <span className="mb-1">Date fin</span>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "justify-start text-left font-normal",
+                        !editing?.franchise_end_date && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {editing?.franchise_end_date ? (
+                        editing.franchise_end_date
+                      ) : (
+                        <span>Choisir</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={parseDDMMYYYY(editing?.franchise_end_date)}
+                      captionLayout="dropdown"
+                      onSelect={(d) =>
+                        d &&
+                        setEditing((s: any) =>
+                          s
+                            ? {
+                                ...s,
+                                franchise_end_date: formatDateDDMMYYYY(d),
+                              }
+                            : s
+                        )
+                      }
+                    />
+                  </PopoverContent>
+                </Popover>
+              </label>
               <label className="flex flex-col sm:col-span-2 text-sm">
                 <span className="mb-1">Description</span>
                 <Input
                   value={editing?.description ?? ""}
-                  onChange={(e) => setEditing((s: any) => (s ? { ...s, description: e.target.value } : s))}
+                  onChange={(e) =>
+                    setEditing((s: any) =>
+                      s ? { ...s, description: e.target.value } : s
+                    )
+                  }
                 />
               </label>
             </div>
@@ -299,7 +319,7 @@ export function ActionMenu({ row }: { row: { original: PartnerItem } }) {
             <Button onClick={saveEditing} disabled={!editing || saving}>
               {saving ? "Enregistrement…" : "Enregistrer"}
             </Button>
-            <Button onClick={closeEdit} variant="secondary">
+            <Button onClick={closeEditModal} variant="secondary">
               Annuler
             </Button>
           </DialogFooter>

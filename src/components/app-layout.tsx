@@ -1,11 +1,8 @@
-import { Outlet, NavLink } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarInset,
   SidebarMenu,
@@ -17,18 +14,34 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { Car, Home, Users, Building2, Landmark } from "lucide-react";
+import { Car, Home, Users, Building2, Landmark, FileText } from "lucide-react";
 import Breadcrumbs from "@/components/breadcrumbs";
 import { ModeToggle } from "./ui/mode-toggle";
+import { NavMain, type NavItem } from "@/components/nav-main";
 
-const navItems = [
-  { to: "/", label: "Home", icon: Home },
-  { to: "/vehicles", label: "Vehicles", icon: Car },
-  { to: "/clients", label: "Clients", icon: Users },
-  { to: "/partners", label: "Partners", icon: Building2 },
-  { to: "/franchises", label: "Franchises", icon: Landmark },
-  { to: "/sub-rental-vehicles", label: "Sous-location", icon: Car },
-] as const;
+const items: NavItem[] = [
+  { title: "Accueil", href: "/", icon: Home },
+  { title: "Véhicules", href: "/vehicles", icon: Car },
+  { title: "Clients", href: "/clients", icon: Users },
+  {
+    title: "Partenaires",
+    icon: Building2,
+    items: [
+      { title: "Partenaires", href: "/partners/list", icon: Building2 },
+      { title: "Sous-location", href: "/partners/sub-rentals", icon: Car },
+    ],
+  },
+  { title: "Franchises", href: "/franchises", icon: Landmark },
+  { title: "Réservations", href: "/bookings", icon: Car },
+  {
+    title: "Documents",
+    icon: FileText,
+    items: [
+      { title: "Factures", href: "/documents/invoices", icon: FileText },
+      { title: "Contrats", href: "/documents/contracts", icon: FileText },
+    ],
+  },
+];
 
 export default function AppLayout() {
   return (
@@ -41,43 +54,26 @@ export default function AppLayout() {
       }
     >
       <Sidebar variant="inset" collapsible="icon">
-      <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
-            >
-              <a href="#">
-                <Car className="!size-5" />
-                <span className="text-base font-semibold">Fox Car.</span>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarHeader>
+        <SidebarHeader>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                className="data-[slot=sidebar-menu-button]:!p-1.5"
+              >
+                <a href="#" className="flex items-center gap-2">
+                  <Car className="!size-5" />
+                  {/* <span className="text-[20px]" aria-hidden="true">
+                    🦊
+                  </span> */}
+                  <span className="text-base font-semibold">Fox Car.</span>
+                </a>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarHeader>
         <SidebarContent>
-          <SidebarGroup>
-            <SidebarGroupLabel>Navigation</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {navItems.map((item) => (
-                  <SidebarMenuItem key={item.to}>
-                    <NavLink to={item.to} end={item.to === "/"} className="contents">
-                      {({ isActive }) => (
-                        <SidebarMenuButton asChild isActive={isActive} tooltip={item.label}>
-                          <div className="inline-flex items-center gap-2">
-                            <item.icon className="size-4" />
-                            <span>{item.label}</span>
-                          </div>
-                        </SidebarMenuButton>
-                      )}
-                    </NavLink>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
+          <NavMain items={items} />
         </SidebarContent>
         <SidebarSeparator />
         <SidebarFooter>

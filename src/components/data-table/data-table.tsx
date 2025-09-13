@@ -33,6 +33,7 @@ interface DataTableProps<TData, TValue> {
   pageSize?: number;
   onPageChange?: (page: number) => void;
   onPageSizeChange?: (size: number) => void;
+  onSelectionChange?: (rows: TData[]) => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -44,6 +45,7 @@ export function DataTable<TData, TValue>({
   pageSize,
   onPageChange,
   onPageSizeChange,
+  onSelectionChange,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
@@ -101,6 +103,13 @@ export function DataTable<TData, TValue>({
       : undefined,
   });
 
+  // Notify parent when selection changes
+  React.useEffect(() => {
+    if (!onSelectionChange) return;
+    const rows = table.getSelectedRowModel().rows.map((r) => r.original as TData);
+    onSelectionChange(rows);
+  }, [onSelectionChange, rowSelection, table]);
+
   // Ref for the table wrapper — used to calculate overlay position/size.
   const wrapperRef = React.useRef<HTMLDivElement | null>(null);
   const overlayStyle = useOverlayPosition(wrapperRef, [data, isLoading]);
@@ -122,8 +131,8 @@ export function DataTable<TData, TValue>({
                             header.getContext()
                           )}
                     </TableHead>
-                  );
-                })}
+                  );}
+                )}
               </TableRow>
             ))}
           </TableHeader>

@@ -12,22 +12,22 @@ import FranchisesPage from '@/pages/franchises/FranchisesPage';
 import AddFranchisePage from '@/pages/franchises/AddFranchisePage';
 import SubRentalVehiclesPage from '@/pages/sub-rental-vehicles/SubRentalVehiclesPage';
 import AddSubRentalVehiclePage from '@/pages/sub-rental-vehicles/AddSubRentalVehiclePage';
+import BookingsPage from '@/pages/bookings/BookingsPage';
+import AddBookingPage from '@/pages/bookings/AddBookingPage';
 
 export const routes = createBrowserRouter([
   {
     path: '/',
     element: <AppLayout />,
     children: [
-      { index: true, element: <HomePage />, handle: { breadcrumb: 'Home' } },
-      // { path: 'about', element: <AboutPage />, handle: { breadcrumb: 'About' } },
-      // { path: 'contact', element: <ContactPage />, handle: { breadcrumb: 'Contact' } },
+      { index: true, element: <HomePage />, handle: { breadcrumb: 'Accueil' } },
       {
         path: 'vehicles',
         element: <Outlet />,
-        handle: { breadcrumb: 'Vehicles' },
+        handle: { breadcrumb: 'Véhicules' },
         children: [
-          { index: true, element: <VehiclesPage />, handle: { breadcrumb: 'Vehicles' } },
-          { path: 'create', element: <AddVehiclePage />, handle: { breadcrumb: 'Create' } },
+          { index: true, element: <VehiclesPage />, handle: { breadcrumb: 'Véhicules' } },
+          { path: 'create', element: <AddVehiclePage />, handle: { breadcrumb: 'Créer' } },
         ],
       },
       {
@@ -36,16 +36,25 @@ export const routes = createBrowserRouter([
         handle: { breadcrumb: 'Clients' },
         children: [
           { index: true, element: <ClientsPage />, handle: { breadcrumb: 'Clients' } },
-          { path: 'create', element: <AddClientPage />, handle: { breadcrumb: 'Create' } },
+          { path: 'create', element: <AddClientPage />, handle: { breadcrumb: 'Créer' } },
         ],
       },
       {
         path: 'partners',
         element: <Outlet />,
-        handle: { breadcrumb: 'Partners' },
+        handle: { breadcrumb: 'Partenaires' },
         children: [
-          { index: true, element: <PartnersPage />, handle: { breadcrumb: 'Partners' } },
-          { path: 'create', element: <AddPartnerPage />, handle: { breadcrumb: 'Create' } },
+          { index: true, path: 'list', element: <PartnersPage />, handle: { breadcrumb: 'Partenaires' } },
+          { path: 'create', element: <AddPartnerPage />, handle: { breadcrumb: 'Créer' } },
+          {
+            path: 'sub-rentals',
+            element: <Outlet />,
+            handle: { breadcrumb: 'Sous-location' },
+            children: [
+              { index: true, element: <SubRentalVehiclesPage />, handle: { breadcrumb: 'Sous-location' } },
+              { path: 'create', element: <AddSubRentalVehiclePage />, handle: { breadcrumb: 'Créer' } },
+            ],
+          },
         ],
       },
       {
@@ -54,19 +63,19 @@ export const routes = createBrowserRouter([
         handle: { breadcrumb: 'Franchises' },
         children: [
           { index: true, element: <FranchisesPage />, handle: { breadcrumb: 'Franchises' } },
-          { path: 'create', element: <AddFranchisePage />, handle: { breadcrumb: 'Create' } },
+          { path: 'create', element: <AddFranchisePage />, handle: { breadcrumb: 'Créer' } },
         ],
       },
       {
-        path: 'sub-rental-vehicles',
+        path: 'bookings',
         element: <Outlet />,
-        handle: { breadcrumb: 'Sous-location' },
+        handle: { breadcrumb: 'Réservations' },
         children: [
-          { index: true, element: <SubRentalVehiclesPage />, handle: { breadcrumb: 'Sous-location' } },
-          { path: 'create', element: <AddSubRentalVehiclePage />, handle: { breadcrumb: 'Créer' } },
+          { index: true, element: <BookingsPage />, handle: { breadcrumb: 'Réservations' } },
+          { path: 'create', element: <AddBookingPage />, handle: { breadcrumb: 'Créer' } },
         ],
       },
-      { path: '*', element: <NotFoundPage />, handle: { breadcrumb: 'Not Found' } },
+      { path: '*', element: <NotFoundPage />, handle: { breadcrumb: 'Introuvable' } },
     ],
   },
 ]);

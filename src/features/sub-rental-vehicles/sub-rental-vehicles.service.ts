@@ -27,13 +27,13 @@ export async function getSubRentalVehicle(id: number) {
 }
 
 export async function createSubRentalVehicle(payload: Partial<SubRentalVehicleItem>) {
-  const res = await fetch(`${API_BASE}/sub-rental-vehicles`, {
+  const res = await fetch(`/api/sub-rental-vehicles`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
   if (!res.ok) throw new Error("Failed to create sub-rental vehicle");
-  return (await res.json()) as SubRentalVehicleItem;
+  // return (await res.json()) as SubRentalVehicleItem;
 }
 
 export async function updateSubRentalVehicle(id: number, payload: Partial<SubRentalVehicleItem>) {

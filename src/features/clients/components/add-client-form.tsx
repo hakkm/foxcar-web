@@ -32,6 +32,7 @@ import {
 import { Calendar as CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
+import type { ClientItem } from "../client.type";
 
 function formatDateDDMMYYYY(d: Date) {
   const dd = String(d.getDate()).padStart(2, "0");
@@ -52,7 +53,7 @@ function parseDDMMYYYY(s?: string): Date | undefined {
 export default function AddClientForm({
   onCreated,
 }: {
-  onCreated?: () => void;
+  onCreated?: (client: ClientItem) => void;
 }) {
   const form = useForm<ClientForm>({
     resolver: zodResolver(clientFormSchema) as any,
@@ -76,13 +77,49 @@ export default function AddClientForm({
 
   async function onSubmit(values: ClientForm) {
     try {
-      await createClient(values as any);
-      toast.success("Client created");
+      const created = await createClient(values as any);
+      toast.success("Client créé");
       form.reset();
-      onCreated?.();
-    } catch (e) {
-      console.log(e)
-      toast.error("Failed to create client");
+      onCreated?.(created);
+    } catch (e: any) {
+      const labelMap: Record<string, string> = {
+        first_name: "Prénom",
+        last_name: "Nom",
+        phone: "Téléphone",
+        email: "Email",
+        address: "Adresse",
+        date_of_birth: "Date de naissance",
+        id_document_type: "Type de pièce",
+        id_document_number: "Numéro de pièce",
+        id_issue_date: "Date de délivrance",
+        id_expiry_date: "Date d'expiration",
+        nationality: "Nationalité",
+        driver_license_number: "Numéro de permis",
+        driver_license_issue_date: "Date de délivrance du permis",
+      };
+
+      if (e?.errors && typeof e.errors === "object") {
+        const items: string[] = [];
+        for (const [field, messages] of Object.entries(
+          e.errors as Record<string, any>
+        )) {
+          const label = labelMap[field] ?? String(field)
+            .replaceAll("_", " ")
+            .replace(/\b\w/g, (c) => c.toUpperCase());
+          const msg = Array.isArray(messages) ? String(messages[0]) : String(messages);
+          items.push(`${label}: ${msg}`);
+        }
+        const desc = items.slice(0, 5).map((it) => `• ${it}`).join("\n");
+        toast.error("Veuillez corriger les informations suivantes", {
+          description: desc,
+          duration: 7000,
+        });
+      } else {
+        toast.error("Échec de création du client", {
+          description:
+            typeof e?.message === "string" ? e.message : "Une erreur est survenue.",
+        });
+      }
     }
   }
 

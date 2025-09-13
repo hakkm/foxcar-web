@@ -60,11 +60,11 @@ export default function AddPartnerForm({ onCreated }: { onCreated?: () => void }
   async function onSubmit(values: PartnerForm) {
     try {
       await createPartner(values as any);
-      toast.success("Partner created");
+      toast.success("Partenaire créé");
       form.reset();
       onCreated?.();
     } catch (e) {
-      toast.error("Failed to create partner");
+      toast.error("Échec de la création du partenaire");
     }
   }
 
@@ -77,7 +77,7 @@ export default function AddPartnerForm({ onCreated }: { onCreated?: () => void }
             name="company_name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Company Name</FormLabel>
+                <FormLabel>Nom de l&apos;entreprise</FormLabel>
                 <FormControl>
                   <Input placeholder="MacroL" {...field} />
                 </FormControl>
@@ -90,7 +90,7 @@ export default function AddPartnerForm({ onCreated }: { onCreated?: () => void }
             name="address"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Address</FormLabel>
+                <FormLabel>Adresse</FormLabel>
                 <FormControl>
                   <Input placeholder="Ksar touroug" {...field} />
                 </FormControl>
@@ -103,7 +103,7 @@ export default function AddPartnerForm({ onCreated }: { onCreated?: () => void }
             name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Phone</FormLabel>
+                <FormLabel>Téléphone</FormLabel>
                 <FormControl>
                   <Input placeholder="0619512220" {...field} />
                 </FormControl>
@@ -130,7 +130,7 @@ export default function AddPartnerForm({ onCreated }: { onCreated?: () => void }
             name="partnership_start_date"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel>Partnership Start Date</FormLabel>
+                <FormLabel>Date de début du partenariat</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -139,7 +139,7 @@ export default function AddPartnerForm({ onCreated }: { onCreated?: () => void }
                         className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
-                        {field.value ? field.value : <span>Pick a date</span>}
+                        {field.value ? field.value : <span>Choisir une date</span>}
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
@@ -162,7 +162,7 @@ export default function AddPartnerForm({ onCreated }: { onCreated?: () => void }
             name="partnership_end_date"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel>Partnership End Date</FormLabel>
+                <FormLabel>Date de fin du partenariat</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -171,7 +171,7 @@ export default function AddPartnerForm({ onCreated }: { onCreated?: () => void }
                         className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
-                        {field.value ? field.value : <span>Pick a date</span>}
+                        {field.value ? field.value : <span>Choisir une date</span>}
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
@@ -194,11 +194,11 @@ export default function AddPartnerForm({ onCreated }: { onCreated?: () => void }
             name="status"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Status</FormLabel>
+                <FormLabel>Statut</FormLabel>
                 <FormControl>
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select status" />
+                      <SelectValue placeholder="Sélectionner un statut" />
                     </SelectTrigger>
                     <SelectContent>
                       {partnerStatuses.map((s) => (
@@ -221,14 +221,14 @@ export default function AddPartnerForm({ onCreated }: { onCreated?: () => void }
               <FormItem className="md:col-span-2">
                 <FormLabel>Description</FormLabel>
                 <FormControl>
-                  <Textarea placeholder="Lorem lorem lorem" {...field} value={field.value ?? ""} />
+                  <Textarea placeholder="Description du partenaire" {...field} value={field.value ?? ""} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
-        <Button type="submit">Create Partner</Button>
+        <Button type="submit">Créer le partenaire</Button>
       </form>
     </Form>
   );

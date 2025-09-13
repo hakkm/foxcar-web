@@ -137,7 +137,7 @@ export default function ActionMenu<TItem>({
             }}
           >
             <div className="flex items-center gap-2">
-              <PencilIcon className="w-4 h-4" /> Edit
+              <PencilIcon className="w-4 h-4" /> Modifier
             </div>
           </DropdownMenuItem>
           <DropdownMenuItem
@@ -147,7 +147,7 @@ export default function ActionMenu<TItem>({
             }}
           >
             <div className="flex items-center gap-2">
-              <TrashIcon className="w-4 h-4 text-red-600" /> Delete
+              <TrashIcon className="w-4 h-4 text-red-600" /> Supprimer
             </div>
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -159,10 +159,9 @@ export default function ActionMenu<TItem>({
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete vehicle</AlertDialogTitle>
+            <AlertDialogTitle>Supprimer le véhicule</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this vehicle? This action cannot
-              be undone.
+              Êtes-vous sûr de vouloir supprimer ce véhicule ? Cette action est irréversible.
             </AlertDialogDescription>
             {deleteError && (
               <p className="mt-2 text-sm text-red-600">{deleteError}</p>
@@ -176,7 +175,7 @@ export default function ActionMenu<TItem>({
                 disabled={deletingId === item.id}
                 onClick={() => setOpenId(null)}
               >
-                Cancel
+                Annuler
               </Button>
             </AlertDialogCancel>
 
@@ -202,10 +201,10 @@ export default function ActionMenu<TItem>({
               {deletingId === item.id ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Deleting…
+                  Suppression…
                 </>
               ) : (
-                "Delete"
+                "Supprimer"
               )}
             </Button>
           </AlertDialogFooter>
@@ -221,241 +220,241 @@ export default function ActionMenu<TItem>({
       >
         <DialogContent className="max-w-4xl w-full">
           <DialogHeader>
-            <DialogTitle>Edit Vehicle</DialogTitle>
-            <DialogDescription>Modify the fields and save.</DialogDescription>
+        <DialogTitle>Modifier le véhicule</DialogTitle>
+        <DialogDescription>Modifiez les champs puis enregistrez.</DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <label className="flex flex-col text-sm">
-                <span className="mb-1">Registration</span>
-                <Input
-                  value={editing?.registration_number ?? ""}
-                  onChange={(e) =>
-                    setEditing((s: any) =>
-                      s ? { ...s, registration_number: e.target.value } : s
-                    )
-                  }
-                />
-              </label>
-              <label className="flex flex-col text-sm">
-                <span className="mb-1">Brand</span>
-                <Input
-                  value={editing?.brand ?? ""}
-                  onChange={(e) =>
-                    setEditing((s: any) =>
-                      s ? { ...s, brand: e.target.value } : s
-                    )
-                  }
-                />
-              </label>
-              <label className="flex flex-col text-sm">
-                <span className="mb-1">Model</span>
-                <Input
-                  value={editing?.model ?? ""}
-                  onChange={(e) =>
-                    setEditing((s: any) =>
-                      s ? { ...s, model: e.target.value } : s
-                    )
-                  }
-                />
-              </label>
-              <label className="flex flex-col text-sm">
-                <span className="mb-1">Year</span>
-                <Input
-                  type="number"
-                  value={editing?.year ?? ""}
-                  onChange={(e) =>
-                    setEditing((s: any) =>
-                      s ? { ...s, year: Number(e.target.value) } : s
-                    )
-                  }
-                />
-              </label>
-              <label className="flex flex-col text-sm">
-                <span className="mb-1">Release date</span>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={cn(
-                        "justify-start text-left font-normal",
-                        !editing?.vehicle_release_date &&
-                          "text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {editing?.vehicle_release_date ? (
-                        editing.vehicle_release_date
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={parseDDMMYYYY(editing?.vehicle_release_date)}
-                      captionLayout="dropdown"
-                      onSelect={(d) =>
-                        d &&
-                        setEditing((s: any) =>
-                          s
-                            ? {
-                                ...s,
-                                vehicle_release_date: formatDateDDMMYYYY(d),
-                              }
-                            : s
-                        )
-                      }
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-              </label>
-              <label className="flex flex-col text-sm">
-                <span className="mb-1">Mileage</span>
-                <Input
-                  type="number"
-                  value={editing?.mileage ?? ""}
-                  onChange={(e) =>
-                    setEditing((s: any) =>
-                      s ? { ...s, mileage: Number(e.target.value) } : s
-                    )
-                  }
-                />
-              </label>
-              <label className="flex flex-col text-sm">
-                <span className="mb-1">Seats</span>
-                <Input
-                  type="number"
-                  value={editing?.number_of_seats ?? ""}
-                  onChange={(e) =>
-                    setEditing((s: any) =>
-                      s ? { ...s, number_of_seats: Number(e.target.value) } : s
-                    )
-                  }
-                />
-              </label>
-              <label className="flex flex-col text-sm">
-                <span className="mb-1">Fuel</span>
-                <Select
-                  value={editing?.fuel_type ?? undefined}
-                  onValueChange={(v) =>
-                    setEditing((s: any) => (s ? { ...s, fuel_type: v } : s))
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Fuel" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {fuelTypes.map((f) => (
-                      <SelectItem key={f} value={f}>
-                        {f}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </label>
-              <label className="flex flex-col text-sm">
-                <span className="mb-1">Status</span>
-                <Select
-                  value={editing?.status ?? undefined}
-                  onValueChange={(v) =>
-                    setEditing((s: any) => (s ? { ...s, status: v } : s))
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {statuses.map((st) => (
-                      <SelectItem key={st} value={st}>
-                        {st}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </label>
-              <label className="flex flex-col text-sm">
-                <span className="mb-1">Price/Day</span>
-                <Input
-                  type="number"
-                  value={editing?.rental_price_per_day ?? ""}
-                  onChange={(e) =>
-                    setEditing((s: any) =>
-                      s
-                        ? { ...s, rental_price_per_day: Number(e.target.value) }
-                        : s
-                    )
-                  }
-                />
-              </label>
-              <label className="flex flex-col text-sm">
-                <span className="mb-1">Gearbox</span>
-                <Select
-                  value={editing?.gearbox_type ?? undefined}
-                  onValueChange={(v) =>
-                    setEditing((s: any) => (s ? { ...s, gearbox_type: v } : s))
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Gearbox" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {gearboxTypes.map((g) => (
-                      <SelectItem key={g} value={g}>
-                        {g}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </label>
-              <label className="flex items-center gap-3 text-sm">
-                <span>AC</span>
-                <Switch
-                  checked={!!editing?.air_conditioning}
-                  onCheckedChange={(v) =>
-                    setEditing((s: any) =>
-                      s ? { ...s, air_conditioning: v } : s
-                    )
-                  }
-                />
-              </label>
-              <label className="flex flex-col text-sm">
-                <span className="mb-1">Vehicle type</span>
-                <Select
-                  value={editing?.vehicle_type ?? undefined}
-                  onValueChange={(v) =>
-                    setEditing((s: any) => (s ? { ...s, vehicle_type: v } : s))
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {vehicleTypes.map((vt) => (
-                      <SelectItem key={vt} value={vt}>
-                        {vt}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </label>
-            </div>
-            {saveError && <p className="text-sm text-red-600">{saveError}</p>}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <label className="flex flex-col text-sm">
+            <span className="mb-1">Immatriculation</span>
+            <Input
+          value={editing?.registration_number ?? ""}
+          onChange={(e) =>
+            setEditing((s: any) =>
+              s ? { ...s, registration_number: e.target.value } : s
+            )
+          }
+            />
+          </label>
+          <label className="flex flex-col text-sm">
+            <span className="mb-1">Marque</span>
+            <Input
+          value={editing?.brand ?? ""}
+          onChange={(e) =>
+            setEditing((s: any) =>
+              s ? { ...s, brand: e.target.value } : s
+            )
+          }
+            />
+          </label>
+          <label className="flex flex-col text-sm">
+            <span className="mb-1">Modèle</span>
+            <Input
+          value={editing?.model ?? ""}
+          onChange={(e) =>
+            setEditing((s: any) =>
+              s ? { ...s, model: e.target.value } : s
+            )
+          }
+            />
+          </label>
+          <label className="flex flex-col text-sm">
+            <span className="mb-1">Année</span>
+            <Input
+          type="number"
+          value={editing?.year ?? ""}
+          onChange={(e) =>
+            setEditing((s: any) =>
+              s ? { ...s, year: Number(e.target.value) } : s
+            )
+          }
+            />
+          </label>
+          <label className="flex flex-col text-sm">
+            <span className="mb-1">Date de mise en circulation</span>
+            <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className={cn(
+            "justify-start text-left font-normal",
+            !editing?.vehicle_release_date &&
+              "text-muted-foreground"
+              )}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {editing?.vehicle_release_date ? (
+            editing.vehicle_release_date
+              ) : (
+            <span>Choisir une date</span>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={parseDDMMYYYY(editing?.vehicle_release_date)}
+              captionLayout="dropdown"
+              onSelect={(d) =>
+            d &&
+            setEditing((s: any) =>
+              s
+                ? {
+                ...s,
+                vehicle_release_date: formatDateDDMMYYYY(d),
+              }
+                : s
+            )
+              }
+              initialFocus
+            />
+          </PopoverContent>
+            </Popover>
+          </label>
+          <label className="flex flex-col text-sm">
+            <span className="mb-1">Kilométrage</span>
+            <Input
+          type="number"
+          value={editing?.mileage ?? ""}
+          onChange={(e) =>
+            setEditing((s: any) =>
+              s ? { ...s, mileage: Number(e.target.value) } : s
+            )
+          }
+            />
+          </label>
+          <label className="flex flex-col text-sm">
+            <span className="mb-1">Places</span>
+            <Input
+          type="number"
+          value={editing?.number_of_seats ?? ""}
+          onChange={(e) =>
+            setEditing((s: any) =>
+              s ? { ...s, number_of_seats: Number(e.target.value) } : s
+            )
+          }
+            />
+          </label>
+          <label className="flex flex-col text-sm">
+            <span className="mb-1">Carburant</span>
+            <Select
+          value={editing?.fuel_type ?? undefined}
+          onValueChange={(v) =>
+            setEditing((s: any) => (s ? { ...s, fuel_type: v } : s))
+          }
+            >
+          <SelectTrigger>
+            <SelectValue placeholder="Carburant" />
+          </SelectTrigger>
+          <SelectContent>
+            {fuelTypes.map((f) => (
+              <SelectItem key={f} value={f}>
+            {f}
+              </SelectItem>
+            ))}
+          </SelectContent>
+            </Select>
+          </label>
+          <label className="flex flex-col text-sm">
+            <span className="mb-1">Statut</span>
+            <Select
+          value={editing?.status ?? undefined}
+          onValueChange={(v) =>
+            setEditing((s: any) => (s ? { ...s, status: v } : s))
+          }
+            >
+          <SelectTrigger>
+            <SelectValue placeholder="Statut" />
+          </SelectTrigger>
+          <SelectContent>
+            {statuses.map((st) => (
+              <SelectItem key={st} value={st}>
+            {st}
+              </SelectItem>
+            ))}
+          </SelectContent>
+            </Select>
+          </label>
+          <label className="flex flex-col text-sm">
+            <span className="mb-1">Prix / jour</span>
+            <Input
+          type="number"
+          value={editing?.rental_price_per_day ?? ""}
+          onChange={(e) =>
+            setEditing((s: any) =>
+              s
+            ? { ...s, rental_price_per_day: Number(e.target.value) }
+            : s
+            )
+          }
+            />
+          </label>
+          <label className="flex flex-col text-sm">
+            <span className="mb-1">Boîte de vitesses</span>
+            <Select
+          value={editing?.gearbox_type ?? undefined}
+          onValueChange={(v) =>
+            setEditing((s: any) => (s ? { ...s, gearbox_type: v } : s))
+          }
+            >
+          <SelectTrigger>
+            <SelectValue placeholder="Boîte de vitesses" />
+          </SelectTrigger>
+          <SelectContent>
+            {gearboxTypes.map((g) => (
+              <SelectItem key={g} value={g}>
+            {g}
+              </SelectItem>
+            ))}
+          </SelectContent>
+            </Select>
+          </label>
+          <label className="flex items-center gap-3 text-sm">
+            <span>Climatisation</span>
+            <Switch
+          checked={!!editing?.air_conditioning}
+          onCheckedChange={(v) =>
+            setEditing((s: any) =>
+              s ? { ...s, air_conditioning: v } : s
+            )
+          }
+            />
+          </label>
+          <label className="flex flex-col text-sm">
+            <span className="mb-1">Type de véhicule</span>
+            <Select
+          value={editing?.vehicle_type ?? undefined}
+          onValueChange={(v) =>
+            setEditing((s: any) => (s ? { ...s, vehicle_type: v } : s))
+          }
+            >
+          <SelectTrigger>
+            <SelectValue placeholder="Type" />
+          </SelectTrigger>
+          <SelectContent>
+            {vehicleTypes.map((vt) => (
+              <SelectItem key={vt} value={vt}>
+            {vt}
+              </SelectItem>
+            ))}
+          </SelectContent>
+            </Select>
+          </label>
+        </div>
+        {saveError && <p className="text-sm text-red-600">{saveError}</p>}
           </div>
 
           <DialogFooter className="gap-2">
-            <Button onClick={saveEditing} disabled={!editing || saving}>
-              {saving ? "Saving…" : "Save changes"}
-            </Button>
-            <Button onClick={closeEditModal} variant="secondary">
-              Cancel
-            </Button>
+        <Button onClick={saveEditing} disabled={!editing || saving}>
+          {saving ? "Enregistrement…" : "Enregistrer les modifications"}
+        </Button>
+        <Button onClick={closeEditModal} variant="secondary">
+          Annuler
+        </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
-  );
-}
+        </div>
+      );
+    }

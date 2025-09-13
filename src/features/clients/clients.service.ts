@@ -4,6 +4,16 @@ import type { ClientItem } from "./client.type";
 // Use /api prefix so Vite proxy forwards to backend
 const API_BASE = "/api";
 
+function ddmmyyyyToIso(dateStr?: string): string | undefined {
+  if (!dateStr) return undefined;
+  // If already ISO, keep it
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr;
+  const m = dateStr.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  if (!m) return dateStr;
+  const [, dd, mm, yyyy] = m;
+  return `${yyyy}-${mm}-${dd}`;
+}
+
 export function useClients(
   search: string,
   page: number,
@@ -38,15 +48,38 @@ export async function getClient(id: number) {
   return (await res.json()) as ClientItem;
 }
 
-export async function createClient(payload: Partial<ClientItem>) {
+export async function createClient(payload: Partial<ClientItem>): Promise<ClientItem> {
+  // Convert date fields to YYYY-MM-DD as expected by backend
+  const bodyPayload = {
+    ...payload,
+    date_of_birth: ddmmyyyyToIso(payload.date_of_birth),
+    id_issue_date: ddmmyyyyToIso(payload.id_issue_date),
+    id_expiry_date: ddmmyyyyToIso(payload.id_expiry_date),
+    driver_license_issue_date: ddmmyyyyToIso(payload.driver_license_issue_date),
+  };
+
   const res = await fetch(`${API_BASE}/clients`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify(bodyPayload),
   });
-  console.log("createClient", res, res.ok);
-  if (!res.ok) throw new Error("Failed to create client");
-  // return (await res.json()) as ClientItem;
+
+  if (!res.ok) {
+    let details: any = undefined;
+    try {
+      details = await res.json();
+    } catch {}
+    const err: any = new Error(details?.message || "Échec de création du client");
+    if (details?.errors) err.errors = details.errors;
+    err.status = res.status;
+    throw err;
+  }
+  const json = await res.json();
+  // API returns { message, client }
+  return (json?.client ?? json) as ClientItem;
 }
 
 export async function updateClient(id: number, payload: Partial<ClientItem>) {
