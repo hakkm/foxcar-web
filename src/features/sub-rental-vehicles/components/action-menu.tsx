@@ -35,7 +35,6 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import type { SubRentalVehicleItem } from "../sub-rental-vehicle.type";
 import { fuelTypes, statuses, gearboxTypes, vehicleTypes } from "@/features/vehicles/vehicle.type";
 import { deleteSubRentalVehicle, updateSubRentalVehicle } from "../sub-rental-vehicles.service";
 

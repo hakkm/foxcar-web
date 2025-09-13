@@ -14,6 +14,10 @@ import SubRentalVehiclesPage from '@/pages/sub-rental-vehicles/SubRentalVehicles
 import AddSubRentalVehiclePage from '@/pages/sub-rental-vehicles/AddSubRentalVehiclePage';
 import BookingsPage from '@/pages/bookings/BookingsPage';
 import AddBookingPage from '@/pages/bookings/AddBookingPage';
+import ContractsPage from '@/pages/documents/contracts/ContractsPage';
+import AddContractPage from '@/pages/documents/contracts/AddContractPage';
+import InvoicesPage from '@/pages/documents/invoices/InvoicesPage';
+import AddInvoicePage from '@/pages/documents/invoices/AddInvoicePage';
 
 export const routes = createBrowserRouter([
   {
@@ -73,6 +77,31 @@ export const routes = createBrowserRouter([
         children: [
           { index: true, element: <BookingsPage />, handle: { breadcrumb: 'Réservations' } },
           { path: 'create', element: <AddBookingPage />, handle: { breadcrumb: 'Créer' } },
+        ],
+      },
+      {
+        path: 'documents',
+        element: <Outlet />,
+        handle: { breadcrumb: 'Documents' },
+        children: [
+          {
+            path: 'invoices',
+            element: <Outlet />,
+            handle: { breadcrumb: 'Factures' },
+            children: [
+              { index: true, element: <InvoicesPage />, handle: { breadcrumb: 'Factures' } },
+              { path: 'create', element: <AddInvoicePage />, handle: { breadcrumb: 'Créer' } },
+            ],
+          },
+          {
+            path: 'contracts',
+            element: <Outlet />,
+            handle: { breadcrumb: 'Contrats' },
+            children: [
+              { index: true, element: <ContractsPage />, handle: { breadcrumb: 'Contrats' } },
+              { path: 'create', element: <AddContractPage />, handle: { breadcrumb: 'Créer' } },
+            ],
+          },
         ],
       },
       { path: '*', element: <NotFoundPage />, handle: { breadcrumb: 'Introuvable' } },
