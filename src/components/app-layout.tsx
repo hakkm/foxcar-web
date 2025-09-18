@@ -14,7 +14,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { Car, Home, Users, Building2, Landmark, FileText } from "lucide-react";
+import { Car, Home, Users, Building2, Landmark, FileText, Wrench, ShieldCheck, FileCog, Droplets } from "lucide-react";
 import Breadcrumbs from "@/components/breadcrumbs";
 import { ModeToggle } from "./ui/mode-toggle";
 import { NavMain, type NavItem } from "@/components/nav-main";
@@ -39,6 +39,16 @@ const items: NavItem[] = [
     items: [
       { title: "Factures", href: "/documents/invoices", icon: FileText },
       { title: "Contrats", href: "/documents/contracts", icon: FileText },
+    ],
+  },
+  {
+    title: "Contrôle",
+    icon: Wrench,
+    items: [
+      { title: "Vidanges", href: "/control/oil-changes", icon: Droplets },
+      { title: "Autres maintenances", href: "/control/other-maintenances", icon: FileCog },
+      { title: "Inspections techniques", href: "/control/technical-inspections", icon: FileText },
+      { title: "Assurances", href: "/control/insurances", icon: ShieldCheck },
     ],
   },
 ];

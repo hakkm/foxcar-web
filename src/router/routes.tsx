@@ -18,6 +18,14 @@ import ContractsPage from '@/pages/documents/contracts/ContractsPage';
 import AddContractPage from '@/pages/documents/contracts/AddContractPage';
 import InvoicesPage from '@/pages/documents/invoices/InvoicesPage';
 import AddInvoicePage from '@/pages/documents/invoices/AddInvoicePage';
+import OilChangesPage from '@/pages/control/oil-changes/OilChangesPage';
+import AddOilChangePage from '@/pages/control/oil-changes/AddOilChangePage';
+import InsurancesPage from '@/pages/control/insurances/InsurancesPage';
+import AddInsurancePage from '@/pages/control/insurances/AddInsurancePage';
+import OtherMaintenancesPage from '@/pages/control/other-maintenances/OtherMaintenancesPage';
+import AddOtherMaintenancePage from '@/pages/control/other-maintenances/AddOtherMaintenancePage';
+import TechnicalInspectionsPage from '@/pages/control/technical-inspections/TechnicalInspectionsPage';
+import AddTechnicalInspectionPage from '@/pages/control/technical-inspections/AddTechnicalInspectionPage';
 
 export const routes = createBrowserRouter([
   {
@@ -100,6 +108,49 @@ export const routes = createBrowserRouter([
             children: [
               { index: true, element: <ContractsPage />, handle: { breadcrumb: 'Contrats' } },
               { path: 'create', element: <AddContractPage />, handle: { breadcrumb: 'Créer' } },
+            ],
+          },
+        ],
+      },
+      {
+        path: 'control',
+        element: <Outlet />,
+        handle: { breadcrumb: 'Contrôle' },
+        children: [
+          {
+            path: 'oil-changes',
+            element: <Outlet />,
+            handle: { breadcrumb: 'Vidanges' },
+            children: [
+              { index: true, element: <OilChangesPage />, handle: { breadcrumb: 'Liste' } },
+              { path: 'create', element: <AddOilChangePage />, handle: { breadcrumb: 'Créer' } },
+            ],
+          },
+          {
+            path: 'insurances',
+            element: <Outlet />,
+            handle: { breadcrumb: 'Assurances' },
+            children: [
+              { index: true, element: <InsurancesPage />, handle: { breadcrumb: 'Liste' } },
+              { path: 'create', element: <AddInsurancePage />, handle: { breadcrumb: 'Créer' } },
+            ],
+          },
+          {
+            path: 'other-maintenances',
+            element: <Outlet />,
+            handle: { breadcrumb: 'Autres maintenances' },
+            children: [
+              { index: true, element: <OtherMaintenancesPage />, handle: { breadcrumb: 'Liste' } },
+              { path: 'create', element: <AddOtherMaintenancePage />, handle: { breadcrumb: 'Créer' } },
+            ],
+          },
+          {
+            path: 'technical-inspections',
+            element: <Outlet />,
+            handle: { breadcrumb: 'Inspections techniques' },
+            children: [
+              { index: true, element: <TechnicalInspectionsPage />, handle: { breadcrumb: 'Liste' } },
+              { path: 'create', element: <AddTechnicalInspectionPage />, handle: { breadcrumb: 'Créer' } },
             ],
           },
         ],
